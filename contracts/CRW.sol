@@ -36,12 +36,12 @@ contract CRW is ERC20, Ownable, AccessControl {
         _;
     }
 
-    function addRestaurant(address _newRestaurant) public onlyAdmin {
+    function addRestaurant(address _newRestaurant) public onlyOwner {
         _grantRole(RESTAURANT, _newRestaurant);
     }
 
     function verify(address _costumer) public onlyRestaurant {
-        if(appointments[_costumer][_restaurant] != 0) {
+        if(appointments[_costumer][msg.sender] != 0) {
             _mint(_costumer, amount_of_token_for_book);
         }
     }
