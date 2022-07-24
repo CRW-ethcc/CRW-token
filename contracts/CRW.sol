@@ -61,9 +61,9 @@ contract CRW is ERC20, Ownable, AccessControl {
     /// @dev allows restaurant to verifiy whether user has come to appointment and rewards him with tokens
     /// @notice restaurant is unchecked in its duty to verify correctly
     function verify(address _costumer) public onlyRestaurant {
-        if(appointments[_costumer][msg.sender] != 0) {
-            _mint(_costumer, amount_of_token_for_book);
-        }
+        require(appointments[_costumer][msg.sender] != 0, "No appointment exists");
+        _mint(_costumer, amount_of_token_for_book);
+        
     }
 
     /// @dev returns true if the user has an appointment at the restaurant
