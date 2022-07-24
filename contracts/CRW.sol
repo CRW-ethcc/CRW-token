@@ -8,7 +8,9 @@ import "@openzeppelin/contracts/access/AccessControl.sol";
 
 /// @notice untested contract
 contract CRW is ERC20, Ownable, AccessControl {
-
+    // ========================================================
+    // Storage
+    // ========================================================
     uint256 public amount_of_token_for_book = 10 * decimals(); // we can change this value later with setAmount()
     bytes32 public constant RESTAURANT = keccak256("RESTAURANT");
 
@@ -18,6 +20,10 @@ contract CRW is ERC20, Ownable, AccessControl {
 
     /// restaurant => capacity
     mapping(address => uint) public capacities;
+
+    // ========================================================
+    // Admin / util methods
+    // ========================================================
 
     constructor() ERC20("CRW", "CRW") {
         // _mint(msg.sender, initialSupply);
@@ -43,6 +49,15 @@ contract CRW is ERC20, Ownable, AccessControl {
         _grantRole(RESTAURANT, _newRestaurant);
     }
 
+    /// @dev used to change the amount of tokens received on validated appointment
+    function setAmount(uint256 _newAmount) public onlyOwner {
+        amount_of_token_for_book = _newAmount * decimals();
+    }
+
+    // ========================================================
+    // Main methods
+    // ========================================================
+
     /// @dev allows restaurant to verifiy whether user has come to appointment and rewards him with tokens
     /// @notice restaurant is unchecked in its duty to verify correctly
     function verify(address _costumer) public onlyRestaurant {
@@ -50,12 +65,6 @@ contract CRW is ERC20, Ownable, AccessControl {
             _mint(_costumer, amount_of_token_for_book);
         }
     }
-
-    /// @dev used to change the amount of tokens received on validated appointment
-    function setAmount(uint256 _newAmount) public onlyOwner {
-        amount_of_token_for_book = _newAmount * decimals();
-    }
-
 
     /// @dev returns true if the user has an appointment at the restaurant
     function isAppointment(address  _restaurant) public view returns (bool) {
